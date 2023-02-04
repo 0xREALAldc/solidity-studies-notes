@@ -29,3 +29,5 @@
 	 - for us to be able to override a function in solidity, we need to use two keywords, that are
 		 - *virtual* for a function to be able to be *overrided* in a child contract, we need to inform in that function the keyword *virtual*
 		 - *override* when we're going to implement in a child contract a function that already exists in the inherited contract, we need to use the word *override* in the declaration of the function
+
+Git repository for the contracts developed: https://github.com/0xREALAldc/Y2-PC-lesson-3-storage-factory-
