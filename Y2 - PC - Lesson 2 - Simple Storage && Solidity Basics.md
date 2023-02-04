@@ -67,3 +67,5 @@
 	- `mapping(string => uint256) public nameToFavoriteNumber` : now we bave a dictionary that everysingle name will map to a specific number
 
 - EVM - *Ethereum Virtual Machine* : blockchains that are compatible with *ethereum* blockchain, some of them are: `Avalanche`, `Fantom` and `Polygon` 
+
+Git repository for the contract developed: https://github.com/0xREALAldc/Y2-PC-lesson-2-simple-storage-
