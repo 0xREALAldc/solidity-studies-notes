@@ -122,10 +122,10 @@
 			- the *revert* does the same as *require*, but without the conditional after
 
 - `Advanced solidity receive & fallback` 
-	- what happens if someone sends ETH to a contract without calling a *payable* function? There's two special functions that we can call when this happens
+	- what happens if someone sends ETH to a contract without calling a *payable* function? There's two special functions that we can call when this happens, and in *BOTH* we don't use the *keyword FUNCTION* before when declaring. It's because they're a special function and solidity knows this, just like the *constructor* where we don't use a *function* designator before declaring
 		- *receive* 
 			- when there's *no data (no calldata)* linked to the transaction, the *receive* function will be triggered 
-			- 
+			- `receive() external payable { ... }`
 		- *fallback* 
-			- whenever *data (calldata)* is sent with a transaction it will trigger *fallback* function
-			- 
+			- whenever *data (calldata)* is sent with a transaction and it doesn't specify *ANY* of the functions that are declared in that contract address, then it will trigger *fallback* function
+			- `fallback() external payable { ... }` 
