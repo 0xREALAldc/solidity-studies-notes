@@ -1,0 +1,17 @@
+`Installation & Setup`
+- `Local development` : 
+	- `Hardhat` : 
+		- it's javascript based for compilation, deploy, test and debug EVM based SC
+	- `EthersJS` 
+		- JS base library for working with smart contracts, wich it's what powers *Hardhat* 
+
+- `How to deploy a contract using JS`
+	- we're going to use asynchronous functions with JS to deploy our contracts or in other things
+		- this is because when we're deploying a contract, we'll need to wait until it finishes to deploy before we can start to use him to call the functions 
+	- solidity is *synchronous* for the most part of the time
+		- we can have *asynchronous* interactions in solidity when working with oracles as chainlink
+	- `deploying` 
+		- so we're going to go through the same steps that Remix did in the browser, so
+			- first remix usued to *compile* our code before deploying the contract 
+				- to compile the code, we're going to use a tool called *solc-js* 
+					- `yarn add solc` in our terminal 
