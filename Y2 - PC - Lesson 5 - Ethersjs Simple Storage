@@ -13,5 +13,51 @@
 	- `deploying` 
 		- so we're going to go through the same steps that Remix did in the browser, so
 			- first remix usued to *compile* our code before deploying the contract 
-				- to compile the code, we're going to use a tool called *solc-js* 
-					- `yarn add solc` in our terminal 
+			- to compile the code, we're going to use a tool called *solc-js* 
+				- `yarn add solc` in our terminal 
+					- we can add a specific version of a packagefor our project, we just need to tell the version after `yarn add solc@0.8.7-fixed` 
+					- `yarn solcjs --help` : we can use to see the help and other commands that are available to us
+					- `yarn solcjs --bin --abi --include-path node_modules/ --base-path . -o . SimpleStorage.sol` 
+					- we're going to compile or contract
+						- ***--bin*** stands for we wanting the binary of the contract
+						- ***--abi*** is we saying that we want the ABI of the contract also
+						- ***--include-path node_modules/*** because we also wan to include any contract or files in this directory
+						- ***--base-path .***  being the *.* means that the PATH folder is the actual folder we're running the command
+						- ***-o .***  means we're going to output the compile binary and ABI to the actual folder
+						- ***SimpleStorage.sol***  finally, the name of the contract we want to compile
+				- `script to compile` : so what we've just done is something that's really time consuming to do everytime, so we can create scripts in our `package.json` that we can run and be easier and faster to compile our contracts
+			```json
+				"scripts": {
+					"compile": "yarn solcjs --bin --abi --include-path node_modules/ --base-path . -o . SimpleStorage.sol"
+				}
+			```
+
+- `package.json` : shows us some informations about our project and also, the dependencies that  we have
+- `yarn.lock` : teels us the exact version of all the different packages of our project, because it holds all the dependencies that the packages that we install have
+
+
+`Ganache & Networks` 
+	- `Deploying to a JS Virtual Blockchain` : in the future, we're going to be using the *hardhat runtime environment* as our JSVM
+
+`Ganache`
+- it's similar to a Virtual machine in Remix
+- fake blockchain that we can run locally to test, deploy and run code
+- very nice to actually see how things work in a blockchain
+- `start a blockchain locally` : we can just open the Ganache application and hit the *Quickstart* button, it'll run locally a fake blockchain for us instantly
+	- it cames with fake accounts with 100eth each
+	- private keys to us to use
+
+`Ethers.js` 
+- allows us to interect with different blockchains 
+- we're going to use it to interact with the blockchain that we choose
+- to install in our project we can use the command below
+	- `yarn add ethers` 
+- to be able to deploy our contract we're going to need the ABI and Binary that we compiled earlier. We'll use *fs-extra* 
+	- `yarn add fs-extra` 
+	- and use the command below to get the files into variables
+	```solidity
+		const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8");
+		const binary = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.bin", "utf8");
+	```
+	- after we're going to be able to create what's called a *contract factory* 
+		- it's not the same as the *contract factory pattern*, in *ethersjs* a contract factory it's just an object that you can use to deploy contracts 
