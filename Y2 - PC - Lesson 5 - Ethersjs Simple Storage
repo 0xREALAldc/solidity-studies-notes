@@ -61,3 +61,24 @@
 	```
 	- after we're going to be able to create what's called a *contract factory* 
 		- it's not the same as the *contract factory pattern*, in *ethersjs* a contract factory it's just an object that you can use to deploy contracts 
+- *DEPLOY* to deply we're just going to run *node deploy.js* 
+- `await` 
+```sol
+	const contractFactory = new ethers.ContractFactory(abi, binary, wallet)
+```
+- in the above code we use the *await* keyword because the *.contractFactory* it's going to return a Promise for us, that resolves into a Contract. If we don't use the await keyword, it'll be a pending promise, so using the keyword allows us to wait for the promise to be resolved and receive a contract as result 
+
+`Adding transactions overrides` 
+- we can set some arguments in the method that we're calling to deploy our contract, as for example *set the gas price* or many others
+	- `const contract = await contractFactory.deploy({ gasPrice: 1000000000 })`
+
+`Transaction receipts` 
+- we can set a X amount of blocks to us wait for our contract to finish deploying
+	- `const deploymentReceipt = await contract.deployTransaction.wait(1)` : we're specifying that we want to wait *ONE(1)* block to make sure the transaction went through
+- we *ONLY GET* a transaction receipt when we wait ate least one block for confirmation, different from the *deployTransaction* that is what we get always when you do a transaction
+- deploying a contract is actually just sending a transaction
+
+
+`Sending a RAW transaction in ethers.js` 
+- using this way we can send *ANY TYPE* of transactions
+- 
