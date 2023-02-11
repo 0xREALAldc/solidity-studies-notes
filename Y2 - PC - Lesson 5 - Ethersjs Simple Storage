@@ -81,4 +81,30 @@
 
 `Sending a RAW transaction in ethers.js` 
 - using this way we can send *ANY TYPE* of transactions
-- 
+- in our case in this project, we sent the field *data* with data about the creation of the contract, but when we do a call to a function like we did in Remix, we will send data that's related to the call of the function we want
+	- but anyway, using ethersJS or Hardhat we have simpler ways to do this call
+
+`Interacting with Contracts in EthersJS` 
+- for calling the functions that we have in our contract, we'll be able to use the *contract* variable that we acquired after we deployed our contracct using the *contractFactory*. The variable *contract* will come with all the methods that we had implemented in our SmartContract
+	- we have this because when creating the *contractFactory* that deployed our contract we passed as argument the *ABI* of our contract
+
+`Tip for best practices` 
+- Numbers that are passed as arguments to functions is usually best practice to pass it as string in "number_here" in quotation marks
+
+`Environment variables`
+- this is a file that we will hold the values for constants that we're going to be using in our project
+- it's where we can put sensitive data that we're not going to share with anyone, like a *private key of a wallet* .env
+- we need to install in our project a package called *dotenv* that will help us in using the new file *.env* 
+	- `yarn add dotenv` 
+- and we need to call the method from *dotenv* in the beggining of our *deploy.js* file so it'll make available the variables that we created 
+```js
+	require('dotenv').config()
+```
+- we can ALSO not use a *.env* file and just add the *private key* and *rpc url* as environment variables in our terminal
+	- we just need to specify them in the terminal command *BEFORE* we call the *node deploy.js*, node will understand equally as if we had a .env file
+```shell
+RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=1231arefedfe2135341 node deploy.js
+```
+- **OR** we can use the *.env* file and *ENCRYPT* our private key and store it encrypted locally, and it's going to be protected by a password that only you will know
+	- we're going to need a new file called *encryptKey.js*
+	- 
