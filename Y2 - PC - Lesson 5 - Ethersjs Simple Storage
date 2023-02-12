@@ -133,3 +133,13 @@ RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=1231arefedfe2135341 node deploy.js
 
 `Alchemy dashboard and The Mempool` 
 - we can *actually* see the transactions that are *pending to be mined* in the mempool of the blockchain in alchemy, in the tab *Mempool* 
+
+`Typescript`
+- we need to have our *deploy* and *encryptKey* in a *.ts* version
+- we change the *require* in both files for *imports* 
+- we're going to add two packages to be able to use typescript
+	- `yarn add typescript ts-node` 
+- we're going to need to add the *types* for *fs-extra* 
+	- `yarn add @types/fs-extra` 
+- we'll have an error in the *.env* variables because in TS they're understood as being 'String | undefined', what means that it's or *String* of *undefined*, we just need to add a *!* after the variable to tell TS that it's not going to be undefined
+- then run `npx ts-node deploy.ts` or `npx ts-node encryptKey.ts` 
