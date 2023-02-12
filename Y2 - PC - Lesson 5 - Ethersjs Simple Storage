@@ -107,4 +107,29 @@ RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=1231arefedfe2135341 node deploy.js
 ```
 - **OR** we can use the *.env* file and *ENCRYPT* our private key and store it encrypted locally, and it's going to be protected by a password that only you will know
 	- we're going to need a new file called *encryptKey.js*
-	- 
+	- there we're going to create a *wallet* object with our *PRIVATE KEY* and use this wallet with the method *.encrypt* to encrypt our *PRIVATE KEY*
+	- after this, we're going to store in a .json file and we can delete the *PRIVATE KEY* from our .env, because we're going to be using our encrypted key instead
+	- after, for the safety we can run passing the *PRIVATE_KEY_PASSWORD* in the shell command with the *node deploy.js*, just need to remember after to erase the *history* of the shell using the command *history -c* 
+
+`Deploying to a testnet or Mainnet` 
+- `Alchemy` 
+	- it's a provider for a RPC url that will allow us to deploy our contract in a testnet (we can use it also for mainnets)
+	- the path that we're going to take in the code is pretty similar of when we deployed to our local test blockchain
+	- after we create a *app* in the alchemy website, we will have access to the *keys* of that app going inside the new app and clicking in *VIEW KEY*, where we're going to use the *http* link that was provided to us to deploy our smart contract
+
+`Getting our Private Key for the testnet`
+- we're going to go in our browser, openning the metamask
+- select the `...` dots and go to *Account details* and then *export private key* and after providing your password you be displayed with the private key
+- then, we're good to go and deploy our contract in the testnet :D
+
+`Verifying and publishing the code in Etherscan (Block explorer - from the UI`
+- we need to go to the etherscan and in the contract address, click in *Verify and publish* 
+- *Compiler type* Solidity (single file)
+- *Compiler version* the one that th econtract uses 
+- *Open source License type* just select the license for the contract and hit *Continue*
+- after we copy and paste the solidity code from our contract
+- Just verify the *i'm not a robot* and *Verify and Publish* 
+- it can take some time to be verified 
+
+`Alchemy dashboard and The Mempool` 
+- we can *actually* see the transactions that are *pending to be mined* in the mempool of the blockchain in alchemy, in the tab *Mempool* 
