@@ -1,0 +1,108 @@
+`Hardhat` 
+- it's the most popular smart contract framework 
+- is a development environment for using JS
+- has really nice features for testing and debugging 
+
+`Hardhat setup`
+- Documentation: https://hardhat.org/
+- we need to initialize a *node* project first
+	- `npm init` or `yarn init` 
+- after we can run the command to initialize a *hardhat project*
+	- `npm install --save-dev hardhat` or `yarn add --dev hardhat` 
+- after we run 
+	- `npx hardhat` or `yarn hardhat` (everytime is used *npx* we can use *yarn* instead)
+	- select *Create an empty hardhat.config.js* or we use the *sample project js* 
+	- we're all done to start using hardhat !
+	- *IMPORTANT*: after we run the first time the command `yarn hardhat` if we run it again, it'll be displayed to us a list of all the different commands that we can use with hardhat
+	- *IF YOU* run into an error, it can be because you already have a *hardhat.config.js* file in a folder in the project, we can find it running the command `npx hardhat --vervbose` or `yarn hardhat --verbose` and it will spit out the path where this file is in
+	- *ALSO* remember of always running `npm install` or `yarn install` 
+
+`Hardhat's architecture`
+- is designed around the concepts of tasks and plugins 
+- the core of hardhat's functionality comes from plugins, which we are free to choose the ones that we want to use
+
+	`Tasks`
+	- everytime we're running hardhat from the terminal, we're running a new task
+	- EG: when we're running the `npx hardhat compile` command we're running the *compile* task
+	- to see the currently available tasks in our project we can run `npx hardhat` 
+	- we can also get more help about the tasks running the command `npx hardhat help [task]
+		- some of them are (and all of them we run with `yarn hadhat [task]` or `npm ...`)
+			- *accounts* : prints the list of the accounts
+			- *check* : check whatever you need
+			- *clean* : clears the cache and deletes all artifacts
+			- *compile* : compiles the entire project, building all artifacts
+			- *console* : opens hardhat console
+			- *flatten* : prints contracts and their depencencies
+			- *help* : shows the help
+			- *node* : starts a JSON-RPC server on top of Hardhat network
+			- *run* : runs a user-defined script after compiling the project
+			- *test* : runs mocha tests
+	
+	`Plugins`
+	- hardhat is not strict to *what* you'll have to use to build your project, but it comes with some built in defaults. All of them we can *override*
+	- most of the times we will consume a plugin to use some tool that we need
+	- one of the recommended plugins by *Hardhat* itself is the `@nomicfoundation/hardhat-toolbox`. To install it we run this command on the project directory
+		- `npm install --save-dev @nomicfoundation/hardhat-toolbox` 
+		- after we'll add the *require* line inside our `hardhat.config.js` 
+			- `require("@nomicfoundation/hardhat-toolbox");` 
+	
+	`Writting and compiling smart contracts` 
+	- we would store our contracts in a folder calles `contracts` 
+	- to compile a contract using hardhat we use the command below
+		- `npx hardhat compile` 
+
+	`Testing contracts` 
+	- we use *ethersjs* to interact with the Ethereum contract
+	- we use *Mocha* as our test runner
+	- we would create a new directory called `tests` to store the tests
+		- for each contract that we're going to create a test, we would create a file with the same name of the file with the extension *.sol* but with the extension *.js*
+	- to run the test we created we use the command below
+		- `npx hardhat test` 
+	- `fixtures` 
+		- is a setup function tha is runned only the first time it's invoked
+		- this will help us to have tests that have a better performance, because after the first execution of a *fixture* the next ones hardhat will only reset the state of the network to what it was right after the *fixture* was initially executed
+		- below we have a example of how to declare a *fixture* and use it more than once, using the `loadFixture` function
+```javascript 
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers"); const { expect } = require("chai");
+
+describe("Token contract", function () {
+  async function deployTokenFixture() {
+	const Token = await ethers.getContractFactory("Token"); 
+	const [owner, addr1, addr2] = await ethers.getSigners(); 
+	const hardhatToken = await Token.deploy(); 
+	await hardhatToken.deployed(); 
+	
+	// Fixtures can return anything you consider useful for your tests 
+	return { Token, hardhatToken, owner, addr1, addr2 };
+  }
+
+  it("Should assign the total supply of tokens to the owner", async function () { 
+	const { hardhatToken, owner } = await loadFixture(deployTokenFixture); 
+	const ownerBalance = await hardhatToken.balanceOf(owner.address); 
+	
+	expect(await hardhatToken.totalSupply()).to.equal(ownerBalance); });
+  }
+
+  it("Should transfer tokens between accounts", async function () {
+	const { hardhatToken, owner, addr1, addr2 } = await loadFixture( deployTokenFixture );
+
+	// Transfer 50 tokens from owner to addr1 
+	await expect( hardhatToken.transfer(addr1.address, 50) ).to.changeTokenBalances(hardhatToken, [owner, addr1], [-50, 50]);
+  
+	// Transfer 50 tokens from addr1 to addr2 // We use .connect(signer) to send a transaction from another account
+	await expect( hardhatToken.connect(addr1).transfer(addr2.address, 50)  ).to.changeTokenBalances(hardhatToken, [addr1, addr2], [-50, 50]);
+  }); 
+  
+});
+```
+
+`Debugging with Hardhat network` 
+- when running our contracts we can log messages and contract variables calling `console.log()` in the solidity code, we just need to import `hardhat/console.sol` 
+- we can use just as we use in a JS file
+```javascript
+console.log( "Transferring from %s to %s %s tokens", msg.sender, to, amount );
+```
+
+`Deploying Simple Storage`
+- 
+
