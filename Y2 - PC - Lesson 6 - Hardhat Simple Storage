@@ -49,7 +49,7 @@
 	`Writting and compiling smart contracts` 
 	- we would store our contracts in a folder calles `contracts` 
 	- to compile a contract using hardhat we use the command below
-		- `npx hardhat compile` 
+		- `npx hardhat compile`  or `yarn hardhat compile` 
 
 	`Testing contracts` 
 	- we use *ethersjs* to interact with the Ethereum contract
@@ -104,5 +104,18 @@ console.log( "Transferring from %s to %s %s tokens", msg.sender, to, amount );
 ```
 
 `Deploying Simple Storage`
-- 
+- we're going to use a script file called `deploy.js`
+- when deploying before we needed to get our compile contract data, and with hardhat we can do it in more ways
+	- different from what we did using ethers in the other project, as hardhat wraps `ethers` inside their own package. We're going to import `ethers` from `hardhat`, so if you look inside the `package.json` you'll see the package `@nomiclabs/hardhat-ethers`
+	- now a great advantage of using `ethers` from *hardhat* is that when getting a *contractFactory* using ethers imported from their package, we needed to import also the *abi* and *binary* of the contract to be able to create the contractFactory, but using ethers from *hardhat* it already knows that the contract, in our case *SimpleStorage* is compiled and ready to deploy. We just need to use the line below to create a contractFactory
+		- `const SimpleStorageFactory = await ethers.getContractFactory("SimpleStorage")
+- the command to run the deploy script is 
+	- `yarn hardhat run scripts/deploy.js` 
 
+`Networks in hardhat`
+- hardhat has a tool built in that's called *Hardhat network* that's a local Ethereum network node designed to development. like a *Ganache* 
+- by *default* all the commands we run using hardhat are runned in the *Hardhat Network*  
+- if we go to the file `hardhat.config.js` we can add more information about our default networks that we're going to run our code, if we don't specify one by default it implicitly uses *defaultNetwork: "hardhat"* 
+	- this default network from hardhat comes with a default *RPC* and *Private Key* so this is why when we deploy to the default network we don't need to set these in our code
+- if you want to specify the network that you're going to deploy your contract you can do it by explicitly describing like the command below 
+	- `yarn hardhat run scripts/deploy.js --network [name of network]` 
