@@ -152,6 +152,10 @@ console.log( "Transferring from %s to %s %s tokens", msg.sender, to, amount );
 		- *BUT* we're gonna do this programatically, and we can in our code run *any task* just by using a run package
 			- we just need to import the *run* from *hardhat*, in the same *require* that we did for *ethers* in the *deploy.js* file. This *run* will allow us to run any hardhat task from our code
 			- the *verify:verify* it's us describing the task and it's sub-task, that's going to be `verify` . The second parameter in the `run` is the actual parameters in a object
+			- when we use the *verify* function we're only going to want to run this on networks that we are able to verify our contract so we're going to verify if the network we're using is a valid one
+				- for this, we can import *network* from the *hardhar* inside our *deploy.js* 
+				- then we're goin to make an IF statement to check the *chainId* using *network.config.chainId* to see if we're on the testnet (goerli chainId is 5)
+				- we're also going to check if the variable with the Etherscan API exists to then run our *verify* function
 ```javascript 
 			await run("verify:verify", {
 				address: contractAddress,
@@ -159,5 +163,64 @@ console.log( "Transferring from %s to %s %s tokens", msg.sender, to, amount );
 			})
 ```
 
+`Interacting with contracts in Hardhat`
+- it's pretty much the same as it was with ethers, we're just going to use the variable *simpleStorage* that's where we stored the contract after deploying and call the *retrieve* and *store* functions
 
+`Artifacts Troubleshooting` 
+- if we run into problems that display in the error message something to do with *artifacts* we can delete the *artifacts* and *cache* folders or run `yarn hardhat clean` that it'll do both and just try to run the previous command from hardhat again 
 
+`Custom hardhat Tasks` 
+- we can also write our own custom tasks for hardhat
+- we can get more information in https://hardhat.org/guides/create-task.html
+- we can declare a new task inside our file *hardhat.config.js* but typically it's created a folder with the name `tasks` where we can store our tasks
+- we will create the task *block-number.js* that will tell us the number of the current block in the blockchain we're connected.
+	- when we define a task we can pass some things, 
+		- *setArguments* : is where we define the arguments that the task is going to take
+		- *setAction* is *what* the task will do
+	- after we finish building our task, we need to declare it inside the *hardhat.config.js* 
+		- `require("./tasks/block-number")` 
+
+`Hardhat Localhost Node (running a local blockchain that doesn't die after the script is done)`
+- we notice that using the *hardhat* network everytime we deploy a contract, when we finish the task we run the network get's deleted and restarts from scratch *every single time* 
+- *BUT* theres a similar way to we run a *hardhat* network with a UI similar to what we had with *Ganache* in Truffle
+	- for this, we can run `yarn hardhat node` and it'll spin up a local node from hardhat network in our terminal, just like ganache. Will be our *LOCALHOST* node, wich differs from *hardhat network* that we had before
+	- it's different from the *default* hardhat network
+	- so we'll need to add this new network in our *hardhat.config.js* and then we'll be able to interact with this network
+		- we add as a `localhost` network, the *url* we get the one that was given to us when we run `yarn hardhat node` and the *chainId* is 31337, same as the default network
+		- *accounts* we don't need to explicitly define the accounts, because when we run hardhart it'l give us the accounts
+
+`The hardhat Console`
+- is a javascript environment for us to run javascript commands to interact with any blockchain
+- we can access this *hardhat console* by running `yarn hardhat console --network [name the network] ` 
+	- even for the *testnets*
+- in this console, we can do ***ANYTHING*** that we do inside a *deploy.js* file
+- then after we're inside the console, we can deploy a contract and call the functions that we declared inside the contract from the *console* 
+
+`Running tests` 
+- hardhat testing works with the *mocha* framework
+- To start we're going to define our test, `name` and a `function`
+	- Inside each `describe` that we declare, we're going to have a `beforeEach
+		- this function is going to tell us what to do before each of our `it()` 
+	- And after the `beforeEach()` a bunch of `it()`
+		- are where we actually write the code for all the tests
+		- here we're going to pass in for the *beforeEach(..HERE..)* a function that will tell what to do before running any of the tests 
+	- we can also have more `describe("name", () => {})` inside of the first *describe*, it's good for modularization in the testing 
+	- *it()* 
+		- inside the *it()* we can validate using *expect* or *assert*
+		- we're going to import them from *'chai'* 
+			- `const { expect, assert } = require("chai")` 
+- to run the tests, we use the command below
+	- `yarn hardhat test` 
+- *RUN ONLY ONE TEST* 
+	- we can use the command `yarn hardhat test --grep [keyword in here]` 
+		- using this command, we can specify to only run the tests that have that *key word* that you've specified above
+	- *ALSO* we can add the keyword *only* to the *it* like this `it.only(""...)` to the test that we want to run, then when we run `yarn hardhat test` it'll run only the ones with this keyword
+
+`Hardhat Gas Reporter` 
+- having our tests, we can also test how much *gas* our functions cost
+- we can use the package `hardhat-gas-reporter` that's linked to every test of ours and can give us aproximetly how much gas one of our functions cost
+	- we can add this one with the command `yarn add hardhat-gas-reporter --dev` 
+	- after we installed the package, we can go to the *hardhat.config.js* and add some parameters so we can work with this gas feature
+	- right under *etherscan* section we add a new one called `gasReporter: { enabled: true }`
+	- and at the top we need to add the *require* for the package `require("hardhat-gas-reporter")` 
+	- now when we run our tests, it'll automatically run the gas reporter together for us
