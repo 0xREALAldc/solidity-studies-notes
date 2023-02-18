@@ -117,5 +117,47 @@ console.log( "Transferring from %s to %s %s tokens", msg.sender, to, amount );
 - by *default* all the commands we run using hardhat are runned in the *Hardhat Network*  
 - if we go to the file `hardhat.config.js` we can add more information about our default networks that we're going to run our code, if we don't specify one by default it implicitly uses *defaultNetwork: "hardhat"* 
 	- this default network from hardhat comes with a default *RPC* and *Private Key* so this is why when we deploy to the default network we don't need to set these in our code
+	- if we want to add more networks, we can add a object called *networks* and add the info about each new one
+```javascript
+	module.exports = {
+		defaultNetwork: "hardhat",
+		networks: {
+			goerli: {
+				url: url for goerli RPC from alchemy,
+				account: [process.env.GOERLI_PRIVATE_KEY],
+				chainId: 5,
+			}
+		}
+	}
+```
 - if you want to specify the network that you're going to deploy your contract you can do it by explicitly describing like the command below 
 	- `yarn hardhat run scripts/deploy.js --network [name of network]` 
+
+`Programatic Verification - (verification for the contract in the Etherscan` 
+- we can add some code to automatically verify our contract right after we deploy
+- we're going to add a new function to do the verification for us in our *deploy.js* file
+	- the function will be `async function verify(contractAddress, args)` where the *contractAddress* it's well, the contract address that was deployed and the *args* would be arguments for the constructor, when we have we will pass it in there
+	- for Etherscan, they have a section on their website for *documentation on API* that will allow us to interact with them to verify automatically
+	- we can do this by using the API from etherscan, but we actually can use a plugin from *hardhat* to do this easily
+		- we will use the `@nomiclabs/hardhat-etherscan` plugin to help us
+		- to install we use `yarn add --dev @nomiclabs/hardhat-etherscan` 
+		- after we will go to the *hardhat.config.js* and add the require for the plugin (or import for typescript )
+			- `require("@nomiclabs/hardhat-etherscan")` 
+			- we still are going to need a *API Key* from Etherscan
+				- we need to sign in into Etherscan to grab our API Key
+				- after we create a new API Key we go back to our project and add to our *.env* file so we can use it
+				- we go back to our *hardhat.config.js* and add a new section called *etherscan* to add the *apiKey* 
+		- *AFTER WE INSTALLED* the plugin, if we run `yarn hardhat` we have a new command enabled that is *verify*, because when we run the command *hardhat* it looks in the project for plugins that will enable new tasks
+		- we can now use this new command to use the task to manually verify the contract 
+		- *BUT* we're gonna do this programatically, and we can in our code run *any task* just by using a run package
+			- we just need to import the *run* from *hardhat*, in the same *require* that we did for *ethers* in the *deploy.js* file. This *run* will allow us to run any hardhat task from our code
+			- the *verify:verify* it's us describing the task and it's sub-task, that's going to be `verify` . The second parameter in the `run` is the actual parameters in a object
+```javascript 
+			await run("verify:verify", {
+				address: contractAddress,
+				constructorArguments: args,
+			})
+```
+
+
+
