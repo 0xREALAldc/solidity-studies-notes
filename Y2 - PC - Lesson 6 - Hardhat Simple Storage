@@ -251,3 +251,18 @@ console.log( "Transferring from %s to %s %s tokens", msg.sender, to, amount );
 
 `Best README Template` 
 https://github.com/othneildrew/Best-README-Template
+
+`Using Typescript in the project`
+- we need to add some packages for using typescript in our projects
+	- `yarn add --dev @typechain/ethers-v5 @typechain/hardhat @types/chai @types/node @types/mocha ts-node typechain typescript` 
+	- we need to convert all of our *.js* files into *.ts* files 
+	- we're going to also add a file called *tsconfig.json* 
+- in testing we have a trouble because we declare a variable that would be of type *our contract* but for this be given right, we need to use a tool called *TypeChain* 
+	- it has a hardhat plugin that allows us to use in our project with typescript 
+	- we will need to go to our *hardhat.config.ts* and import this package `import "@typechain/hardhat"` 
+	- now if we run the command *yarn hardhat* we'll have a new task called *typechain* that has as description *Generate typechain typings for compiled contracts*, this will enable our variable to have the typing of our compiled contract 
+		- we'll run the command `yarn hardhat typechain` 
+		- this will create a new folder called *typechain-types* that will have the types for all of our contracts 
+			- we want to add in the *.gitignore* file the *typechain* and *typechain-types* so we don't push them to github
+		- after in the *test-deploy.ts* file we'll import the types so we can set to the variables
+			- `import { SimpleStorage, SimpleStorage__factory } from "../typechain-types"` 
