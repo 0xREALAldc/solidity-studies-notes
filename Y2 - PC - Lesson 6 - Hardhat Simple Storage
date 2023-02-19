@@ -224,3 +224,30 @@ console.log( "Transferring from %s to %s %s tokens", msg.sender, to, amount );
 	- right under *etherscan* section we add a new one called `gasReporter: { enabled: true }`
 	- and at the top we need to add the *require* for the package `require("hardhat-gas-reporter")` 
 	- now when we run our tests, it'll automatically run the gas reporter together for us
+	- it'll show us how much each method we called in the tests cost in gas, giving us a easy way to better optimize our functions
+	- *WE CAN MAKE EVEN BETTER* taking the output of the gas reporter to a file and add some more parameters in the  *hardhat.config.js*
+		- *outputFile* the name of the file to save the gas report
+		- *noColors* this is because when output to a file, it get's all mess up
+		- *currency* we can get the cost for each function in USD
+			- to get this right, we need to use a API from *coinmarketcap* to be able to know the prices
+			- then we add the *coinmarketcap* and set the API KEY for it 
+		- `OTHER CHAINS` 
+			- we can see how much it would cost to deploy to other chains, we just need to see in the *hardhat gas reporter* package in npm the tokens that are supported and add the *token* property also informing the TOKEN
+				- EG: token: "MATIC"
+
+`Solidity Test Coverage` 
+- we can use a tool called `solidity-coverage` that's also a hardhat plugin that we can use
+- this is a tool that goes throught every line of our *.sol* files and sees how many of them is covered by our tests
+- we can add this package using the command `yarn add --dev solidity-coverage` 
+- then we add to our *hardhat.config.js* the same as the other plugins 
+- there's some more configurations that we can add like the ones we did in the *gas reporter* but we're going to use the default now
+- to see how much of our code is covered by our tests we can run the command below
+	- `yarn hardhat coverage` 
+		- this generates a file called *coverage.json* and a *coverage* folder that we can add to our *.gitignore* file
+
+`Hardhat Waffle` 
+- is the plugin `@nomiclabs/hardhat-waffle` that enables us to use the Waffle testing framework
+- is a framework that allows us to do some pretty advanced testing 
+
+`Best README Template` 
+https://github.com/othneildrew/Best-README-Template
