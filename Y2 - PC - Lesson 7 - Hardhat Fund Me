@@ -1,0 +1,19 @@
+`Hardhat Setup` 
+- create a new folder to hold the project
+- then to add *hardhat* we run `yarn add --dev hardhat` 
+- then `yarn hardhat` 
+- we'll create our contracts *FundMe.sol* and *PriceConverter.sol*
+	- remembering to before compiling, check the solidity version in *hardhat.config.js* to match the one that we're using in our contracts 
+- if we try to compile with `yarn hardhat compile` we run into an error. It'll tell us that we need the package for the *chainlink* contracts that we used
+	- we install using `yarn add --dev @chainlink/contracts` 
+
+`Linting`
+- `.solhint.json` 
+	- is known as a solidity linter
+	- linting is a process of running a program that will analyse code for potential errors
+	- ESLint is a way to lint JS code
+	- Solint is for Solidity
+		- when using in our project, we can run in a file using the command `yarn solhint [path to the file] 
+		- it's good to check for holes in best practices in our code 
+
+
