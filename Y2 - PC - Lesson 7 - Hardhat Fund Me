@@ -6,6 +6,7 @@
 	- remembering to before compiling, check the solidity version in *hardhat.config.js* to match the one that we're using in our contracts 
 - if we try to compile with `yarn hardhat compile` we run into an error. It'll tell us that we need the package for the *chainlink* contracts that we used
 	- we install using `yarn add --dev @chainlink/contracts` 
+	- after we installed the *chainlink/contracts* we can run `yarn hardhat compile` and it'll work
 
 `Linting`
 - `.solhint.json` 
@@ -15,5 +16,92 @@
 	- Solint is for Solidity
 		- when using in our project, we can run in a file using the command `yarn solhint [path to the file] 
 		- it's good to check for holes in best practices in our code 
+
+`Hardhat Deploy Package`
+- it will make easier to us to keep track of the contracts that are deployed and also facilitate our tests
+- to add to our project we'll run the command below
+	- `yarn add --dev hardhat-deploy` 
+	- After we will go to our *hardhar.config.js* to add the require for the package as below
+		- `require("hardhat-deploy")` 
+		- after we can delete our *deploy.js* file, since we're not going to use it anyway
+	- we will create a new folder called *deploy* that is where the *hardhat deploy* package will use to deploy our contracts and where we will put our scripts
+- we will run the command below that is where we will get the *@nomiclabs/gardhat-ethers* and **override** with the *hardhat-deploy-ethers* . In the last project we used the *hardhat-ethers* to override the *ethers* package
+	- `yarn add --dev @nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers ethers ` 
+	- this will enable *ethers* to keep track and remember of every deployment that we make in our contract
+	- looking in our *package.json* the line below is meant to show that now the *@nomiclabs/hardhat-ethers* package is now overriden by *npm:hardhat-deploy-ethers* 
+		- `"@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers"`
+- this way this package works is that *EVERY* script that is added to the *deploy* folder will be executed when we run the command `yarn hardhat deploy` 
+	- a good practice is to number the scripts so they'll run in the order that you want to
+		- EG `01-deploy-fund-me.js` 
+- different from the other script that we've made to deploy our *simpleStorage* contract, in this we will not create a *main* function and call it, we will only define a function and export it as default so the *hardhat deploy* package can run
+- we then define inside a script a function that the hardhat deploy will call it, like below 
+```javascript
+					 // hre - Hardhat Runtime Environment
+module.exports = async (hre) => {}
+```
+- we can pass the *hre* as above or we can get only the variables/functions that we want using the syntax below 
+```javascript
+module.exports = async ({ getNamedAccounts, deployments }) => {}
+```
+- the function *getNamedAccounts()* is a way that facilitates for us to get accounts, the accounts that are defined in the *accounts* array in the *networks* property in the *hardhat.config.js* file, by names, that we can define in our *hardhat.config.js*. 
+	- This will enable us to give a name to each array spot, to make it easier to get that account, and below we name the account in the spot 0 with the name *deployer* 
+```javascript
+namedAccounts: {
+	deployer: {
+		default: 0,
+	}
+},
+```
+- the *deployer* account that we named before is the account that we will grab to use in our *01-deploy-fund-me.js* script to deploy our contract
+- to *DEPLOY* our contract different from the other project we won't be needing to use a *contract factory*, we will use the function *deploy* that we got from *deployments* 
+	- to be able to use different addresses to our *chainlin data feed* we will use a trick that the *AAVE* protocol uses that is create a helper file to give us a little help in this 
+		- we will create a file called *helper-hardhat-config.js*
+		- and inside, we define a object called *networkConfig* where we will define the networks that we're going to deploy our contract and define the address for the contract of the data feed in that chain
+		- after in our *01-deploy-fund-me.js* we will use to get the contract address by using the *chainId* as key value
+```javascript 
+// here we're gonna define addresses for data feeds that will help us deploy to different chains
+const networkConfig = {
+	4: {
+		name: "goerli",
+		ethUsdPriceFeedAddress: "0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e"
+	},
+	42161: {
+	name: "arbitrum",
+		ethUsdPriceFeedAddress: "0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612"
+	},
+	//31337 hardhat Network
+}
+
+module.exports = {
+	networkConfig,
+}
+```
+
+`Mocking & helper-hardhat-config` 
+- mocking is how we can create *fake data* to use to test locally
+- we will go back to our *deploy* folder and create a new file called *00-deploy-mocks.js* 
+	- this file will deploy our *mock* contract that we will use as data feed when we're running in a *local node* or in *hardhat network*
+	- the mock contract we can use one that *chainlink* already has defined for us, and we can use the advantage of the *node_modules* folder to create a simple contract file and just import the *MockV3Aggregator.sol* that chainlink already has for us to use
+```solidity
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.6.0;
+
+import "@chainlink/contracts/src/v0.6/tests/MockV3Aggregator.sol";	
+```
+
+`Different versions of solidity contracts` 
+- we are going to run into issues that we will have our contract in one version and try to use another that's in other version
+- if we compile using *yarn hardhat compile* we will get an error
+- we can resolve this by going in our *hardhat.config.js* and we can change the way we pass the *solidity* property to pass multiple versions so our compiler can compile contracts in different versions
+```solidity
+// solidity: "0.8.8", // before using one compiler
+solidity: {  // using multiple compilers
+	compilers: [
+		{ version: "0.8.8" },
+		{ version: "0.6.6" },
+	],
+},
+```
 
 
