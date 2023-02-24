@@ -103,5 +103,16 @@ solidity: {  // using multiple compilers
 	],
 },
 ```
+- after we can run the command `yarn hardhat compile` to compile our contracts and we will have our *MockV3Aggregator.sol* that we can deploy to have our data feed for chainlink in local testnets 
+- to know if we will deploy our *mock contract* we will add in the *helper-hardhat-config.js* a variable where we will declare our *development chains*. We will export them as we did with our *networkConfig* to use
+	- `const developmentChains = ["hardhat", "localhost"]` 
+- after we will import in our *00-deploy-mocks.js* and use to validate if we're in a development network
 
+- We can execute only one deploy script by adding the property in the example below in the end of the script that we want to declare and running the command `yarn hardhat deploy --tags [use the tag that was declared]` 
+	- `module.exports.tags = ["all", "mocks"]` 
 
+`ABOUT LOCAL NODE`
+- one awesome thing about *hardhat deploy* is that after we create our scripts when we run our *local NODE* it'll automatically deploy our scripts for us in that network
+
+`Utils folder` 
+- 
