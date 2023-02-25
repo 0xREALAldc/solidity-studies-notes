@@ -115,4 +115,100 @@ solidity: {  // using multiple compilers
 - one awesome thing about *hardhat deploy* is that after we create our scripts when we run our *local NODE* it'll automatically deploy our scripts for us in that network
 
 `Utils folder` 
-- 
+- this is a general folder where we will add different scripts that we can use acrosss different deploy scripts, without repeating code. We centralize functions
+- is where we will create our *verify.js* file to have our function that automatically verify our contract in etherscan
+
+`Testnet Demo` 
+- in our *hardhat.config.js* we can add a property in the *networks* section where we tell how many blocks we want to wait in each network that we have configured 
+	- we just need to go in one of our networks that are configured and add the *blockConfirmatons: [number of blocks to wait]* as we show in the example below
+```javascript
+		goerli: {
+			url: GOERLI_RPC_URL,
+			accounts: [GOERLI_PRIVATE_KEY],
+			chainId: 5,
+			**blockConfirmations: 6,**
+		},
+```
+- after we go back to our deploy script and add a new property in the call of the *deploy* function to pass to the *hardhat deploy* the number of confirmations that must wait, as the example below
+```javascript 
+	const fundMe = await deploy("FundMe", {
+		from: deployer,
+		args,
+		log: true,
+		**waitConfirmations: network.config.blockConfirmations || 1,**
+	})
+```
+	- by using this 'log' property it'll give us some automatic logs when we deploy our contract 
+```shell
+lesson-7-hardhat-fund-me git:(main) ✗ yarn hardhat deploy --network goerli
+yarn run v1.22.19
+warning package.json: No license field
+$ /Users/realaldc/Documents/www/blockchain/solidity-studies/fullstack-web3-patrick-collins/lesson-7-hardhat-fund-me/node_modules/.bin/hardhat deploy --network goerli
+Nothing to compile
+deploying "FundMe" (tx: 0xc45a6bfed6badd1c86434a528d5fbf0fcc054ebaf3de9f4e492591248b614837)...: deployed at 0x9b6e0ae98e0390dAd042d4e2653a4684681FD1Df with 901252 gas
+Verifying contract...
+Nothing to compile
+Successfully submitted source code for contract
+contracts/FundMe.sol:FundMe at 0x9b6e0ae98e0390dAd042d4e2653a4684681FD1Df
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract FundMe on Etherscan.
+https://goerli.etherscan.io/address/0x9b6e0ae98e0390dAd042d4e2653a4684681FD1Df#code
+-----------------------------------------------------------
+✨  Done in 135.38s.
+```
+
+`Solidity Style Guide` 
+- there's some conventions for naming and ordering that we can follow so we make our contract look more professional
+	- we can find this style guide in the *docs.soliditylan.org*, just search for *style guide* 
+- Order of Layout
+	1. Pragma statements
+	2. Import statements
+	3. Error codes (eg: *error NotOwner()*)
+	4. Interfaces
+	5. Libraries
+	6. Contracts
+	- Inside each contract, library or interface use the following order:
+		1. Type declarations
+		2. State variables 
+		3. Events
+		4. Modifiers
+		5. Functions
+			- Functions have a sequence that we should follow along as below
+			1. *constructor*
+			2. *receive*
+			3. *fallback*
+			4. *external*
+			5. *public*
+			6. *internal*
+			7. *private*
+			8. *view / pure*
+- `NatSpec` : Ethereum Natural Language Specification Format 
+	- is a way to document our code to provide rich documentation for functions, return variables and so forth.
+	- the reason that we should do this in versions of our contract is that we can create automatic documentation of it after using `solc` 
+
+`Testing Fund Me`
+- we're going to write tests to of course test what was implemented but also, to make the functions more *cheaper* and *faster* to execute
+- we're going to work with *two* types of tests now
+	- `Unit` 
+		- unit tests are done locally
+		- we are going to test minimal portions of our code in this tests
+		- we can do these in *local hardhat* or a *forked hardhat* networkFund
+	- `Staging` 
+		- staging or integration tests are done on a TESTNET
+		- it would be the last stop before deploying to a mainnet
+- `fixture` 
+	- allows us to run our entire *deploy folder* with as many *tags* as we want
+	- we need to imoprt *deployments* from *hardhat* to be able to use the next command that will deploy all scripts in the deploy folder that have the tag that we pass in 
+		- `await deploymnets.fixture(["all"])` 
+		- the command above will deploy the scripts that have the tag that we passed, in this case is *all* and we will be able to use them in our tests
+		- after we need to grab the contracts that we're deployed and we will use *ethers* to get them. After we import ethers from hardhat, we will use the command below to get the contracts that we're deployed
+			- `await ethers.getContract("FundMe")` 
+			- the above function is provided to ethers by *hardhat-deploy* and will allow us to get the most recent deployed version of the contract by passing their name
+- *TESTS THAT FAIL AND ARE REVERTED*
+	- well if we just call an function from our contract and we maybe don't send enough ETH as parameter, or forget a parameter our test is goin to fail, but not with as an failed test, but an EVM error
+	- here's where comes in our *waffle* testing shows it's force, because with waffle we can do some tests and *EXPECT* something to happen, like *a transaction to be reverted*. We import *expect* from *chai* just like we did with *assert* 
+		- `await expect(fundMe.fund()).to.be.revertedWith("You need to spend more ETH!")` 
+
+
+- TODO : write tests for the `receive` and `fallback` functions 
