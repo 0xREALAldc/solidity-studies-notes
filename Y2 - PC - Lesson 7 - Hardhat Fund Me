@@ -209,6 +209,36 @@ https://goerli.etherscan.io/address/0x9b6e0ae98e0390dAd042d4e2653a4684681FD1Df#c
 	- well if we just call an function from our contract and we maybe don't send enough ETH as parameter, or forget a parameter our test is goin to fail, but not with as an failed test, but an EVM error
 	- here's where comes in our *waffle* testing shows it's force, because with waffle we can do some tests and *EXPECT* something to happen, like *a transaction to be reverted*. We import *expect* from *chai* just like we did with *assert* 
 		- `await expect(fundMe.fund()).to.be.revertedWith("You need to spend more ETH!")` 
+		- to pass the value in the test we can use the library *ethers.utils.parseEther("1")* to convert a number to the value in ETH, this 1 will have the decimals with him after we use the *.parseEther()* 
+		- there's also in the documentation of *ethers* a function called *.parseUnits(....)* where we can parse any units of ETH, like *ether, gwei,* 
+- *RUN ONLY INE TEST* 
+	- we can do this using the flag *--grep "some part of the test name"*  and it'll run only the test that has that string in the declaration
+		- EG: `yarn hardhat test --grep "amount funded"` 
+	
+- *PROCESS TO THINK ABOUT TESTS*
+	- *Arrange* you want to arrange the test
+	- *Act* then you want to act
+	- *Assert* then you'll run the asserts
+
+- `DEBUGGING`
+	- We can use in VSCode *breakpoints* so we are able to debug our code while our scripts and contracts are running
+	- we just need to put a breakpoint in some part of our code and then click in the option *Run and Debug* on the sidebar, and then click in *JavaScript Debug Terminal*.
+	- it'll open a new terminal where when we run *yarn hardhat test* it will run our script and stop right in our breakpoint
+
+`console.log && Debugging`
+- we can use *console.log()* inside a solidity file using hardhat
+- we just need to have the following import *import "hardhat/console.sol";* 
+- and then boom, we can use our beloved *console.log("info here")* as we always use in JS
+
+`Storage in solidity`
+- *constant* and *immutable* variables doesn't take storage spots, because they're actually part of the contracts bytecode
+- variables that are declared *inside functions* doesn't take storage sports either, because they just exist in the duration of the function, after they get deleted from the memory that they were using
+- Naming convention to a *storage variable* is using a *s_* as prefix to the name of the variable
+
+`Gas optimizations using storage Knowledge`
+- 
 
 
+go back to https://youtu.be/gyMwXuJrbJQ?t=42759 when I want to code again
 - TODO : write tests for the `receive` and `fallback` functions 
+
