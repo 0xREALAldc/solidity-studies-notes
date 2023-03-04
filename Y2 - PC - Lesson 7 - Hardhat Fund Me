@@ -236,9 +236,18 @@ https://goerli.etherscan.io/address/0x9b6e0ae98e0390dAd042d4e2653a4684681FD1Df#c
 - Naming convention to a *storage variable* is using a *s_* as prefix to the name of the variable
 
 `Gas optimizations using storage Knowledge`
+- we added a function called *cheaperWithdraw* where we had noticed that when we withdraw from the contract having multiple funders, we would be reading a lot from a *storage variable*.
+- this costs more gas, because reading and writting to storage are expensive actions to do
+- so we made this *cheaperWithdraw* where we can create a local variable in *memory* where we can assign the *s_funders* array value to ir, and in this way we're only going to read from storage one time
+	- EG: `address[] memory funders = s_funders;` 
+- all the other times, we'll be reading from this local variable and it'll save us some gas
+ - FYI *internal* and *private* variables are also cheaper gas wise, so we refactored our contract a little bit more 
+
+`Solidity Chainlink Syle Guide`
 - 
 
 
 go back to https://youtu.be/gyMwXuJrbJQ?t=42759 when I want to code again
 - TODO : write tests for the `receive` and `fallback` functions 
+
 
