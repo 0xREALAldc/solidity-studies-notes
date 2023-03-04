@@ -243,11 +243,26 @@ https://goerli.etherscan.io/address/0x9b6e0ae98e0390dAd042d4e2653a4684681FD1Df#c
 - all the other times, we'll be reading from this local variable and it'll save us some gas
  - FYI *internal* and *private* variables are also cheaper gas wise, so we refactored our contract a little bit more 
 
-`Solidity Chainlink Syle Guide`
-- 
+`Staging tests` 
+- this are the tests that will run in a *REAL TESTNET* 
+- this is the test that we're going to run after we do a deploy, just to check if everything's okay
+- We'll use the following syntax `developmentChains.includes(network.name) ? describe.skip : describe("FundMe", ...)` to validate if we're not in a development chain, then we will run our test
+- to run our *staging tests* we need to add the flag *--network [name of testnet]* to run the tests
+	- EG: `yarn hardhat test --network goerli` 
 
 
-go back to https://youtu.be/gyMwXuJrbJQ?t=42759 when I want to code again
-- TODO : write tests for the `receive` and `fallback` functions 
+`Runnung Scripts on a Local Node`
+- We're first going to write a script called *fund.js* that will allow us to fund our contract if we want to 
+- to run the script we just created, we can run `yarn hardhat node` to get our local node running and with our contracts deployed
+	- then to run the script itself we will run the following command `yarn hardhat run scripts/fund.js --network localhost` 
+
+`Adding scripts to your package.json` 
+- we can go to our *package.json* file and add a property named *"scripts"* where we can declare our scripts with a nickname that is shorter than the whole command, for example the one below.
+	- EG: `"test": "yarn hardhat test"` 
+	- After we declare this *test* in our *scripts* property in the package.json file we only need to run `yarn test` and it'll run the script, with a shorter and easier command
+
+
+- Project code repository: 
+	- https://github.com/0xREALAldc/Y2-PC-lesson-7-hardhat-fund-me-
 
 
