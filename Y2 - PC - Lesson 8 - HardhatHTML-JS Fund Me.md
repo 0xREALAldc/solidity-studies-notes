@@ -55,3 +55,30 @@
 		// now we need our contract and ABI
 		const contract = new ethers.Contract(contractAddress, abi, signer)
 	```
+
+`Reseting metamask account` 
+- we will need to do this a lot because when we start a local node and do transactions on it, it'll save in the metamask the *nonce* for the account, and when we stop and run again our local node, it's going to give us an error
+- we need to *reset* our metamask account to solve this, or use the *custom nonce* for the account and this automatically fix this 
+- to reset the account we'll go in our metamask, click in the *My Accounts* in metamask
+	- go to *Settings* and then *Advanced* and then *Reset Account* 
+
+`Listening for Events and Completed Transactions`
+- we can use *contract.once* or *provider.once* both will work
+- we will use this functions to listen to when the transaction finishes and we can do something 
+- we'll be using *Promises* to be able to wait and listen for the transaction actually be mined and then go ahead in the process.
+- as showed below, in our *listenForTransactionMine* function we will return a *promise* using the *resolve()* INSIDE the *provider.once(...)* function, so the only way that the application go on is when the *provider.once* finishes and call the *resolve()* inside.
+	- just to remember, *promises* only finishes when *resolve* or *reject* functions are called.
+```javascript
+function listenForTransactionMine(transactionResponse, provider) {
+	console.log(`Mining ${transactionResponse.hash}...`)
+	
+	return new Promise((resolve, reject) => {
+	// listen for this transaction to finish
+		provider.once(transactionResponse.hash, (transactionReceipt) => {
+			console.log(`Completed with ${transactionReceipt.confirmations} confirmations`)
+			resolve()
+		})		
+	})
+}
+```
+
