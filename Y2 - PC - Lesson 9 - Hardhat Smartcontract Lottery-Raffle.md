@@ -59,7 +59,25 @@
 		- https://github.com/0xREALAldc/Y2-PC-extra-lesson-hardhat-events-logs-
 
 `Events in Raffle.sol` 
+- Good practice in naming events is to name it with the function name reversed, for example, our function is *enterRaffle* and our event will be named as *RaffleEnter*
 
+`Implementing Chainlink VRF (Randomness in Web3)` 
+-  Chainlink VRF is a 2 transaction process
+	- this is because it makes it hard for anyone to try and brute force to guess the winner number
+	- we'll request the random number in *one function* and get the return of this call *in a second function*
+- we'll need to install the package that contains the *chainlink smart contracts* so we're able to import and use in our contract
+	- `yarn add --dev @chainlink/contracts` 
+- we have added a function called *function fullfillRandomWords() internal override {}* that is a function from *chainlink contracts* that in there is declared as *virtual*, with this meaning that we're supposed to implement it. 
+	- this is why we declared our *fullfillRandomWords* function with the word *override*, to override the function in the parent contract with our code
+- `Implementing the request` 
+	- 
+
+
+`Hardhat Shorthand`
+- hardhat has a *shorthand (hh) and autocomplete* package to make it easier to us to call the hardhat commands in the command line
+- we can install the package with the command below
+	- `npm i -g hardhat-shorthand`
+- now instead of needing to run `yarn hardhat compile` we can only run `hh compile` 
 
 
 - Repository with the code developed 
