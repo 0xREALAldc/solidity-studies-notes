@@ -70,7 +70,49 @@
 - we have added a function called *function fullfillRandomWords() internal override {}* that is a function from *chainlink contracts* that in there is declared as *virtual*, with this meaning that we're supposed to implement it. 
 	- this is why we declared our *fullfillRandomWords* function with the word *override*, to override the function in the parent contract with our code
 - `Implementing the request` 
+	- we'll need to do the call below informing the parameters described 
+		- *i_keyHash* it's the gasLane hash that chainkink provides for us, which specifies the maximum gas price to bump to
+		- *i_subscriptionId* the subscription ID from chainlink VRF
+		- *REQUEST_CONFIRMATIONS* the number of confirmations needed 
+		- *i_callbackGasLimit* depends on the number of requested values that you want sent to the *fulfillRandomWords()* function. Storing each word costs about 20k gas
+		- *NUM_WORDS* is the number of random numbers that we want
+	- the call to *.requestRandomWords* returns a *uint256 request ID* that defines who's requesting this data
+```solidity
+		i_vrfCoordinator.requestRandomWords(
+			i_keyHash, //gasLane
+			i_subscriptionId,
+			REQUEST_CONFIRMATIONS,
+			i_callbackGasLimit,
+			NUM_WORDS
+		);
+```
+`Implementing the Fulfill`
+- were going to use the *module ( a % b)* function to pick a random winner. This is because were going to get the random number that we receive from Chainlink VRF and take the MOD of this number over the number of players in our lottery.
+	- EG: 202 (random number) % 10 (number of players in the lottery) = 2 . The number 2 is the index of the player who will be the winner of our lottery.
+
+
+`Introduction to Chainlink Automation` 
+- enables the ability to set a contract to have a function being performed based in a off chain 
+reason, or you can just make it to execute something after it passes 30 seconds or so
+
+- `Implementing Chainlink Automation - checkUpkeep`
+	- *checkUpkeep* is the function that the Chainlink node will call in your contract to check if the condition that we've defined is met and we need to run the *performUpkeep* method 
+	- it takes a parameter called *checkData* that allows us to specify anything that we want when we call the checkUpkeep function, even another function we can pass it as parameter because of the type *bytes*. 
+	- as return we have the *upkeepNeeded* that tells the Chainlink node if the condition was met and it needs to call the *performUpkeep*
+	- also returns the *bytes memory performData* that we can specify something that the node can do
+- `Enums` 
+	- we can use to create custom types with some *constant values* to use as types 
+		- EG: `enum State { Created, Locked, Inactive }` 
+
+- `Implementing Chainlink Automation - performUpkeep` 
+	- this function will be executed when the *checkUpkeep* returns *true* to the chainlink node
 	- 
+
+
+
+
+
+
 
 
 `Hardhat Shorthand`
@@ -78,6 +120,8 @@
 - we can install the package with the command below
 	- `npm i -g hardhat-shorthand`
 - now instead of needing to run `yarn hardhat compile` we can only run `hh compile` 
+
+
 
 
 - Repository with the code developed 
