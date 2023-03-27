@@ -109,6 +109,19 @@ reason, or you can just make it to execute something after it passes 30 seconds 
 	- 
 
 
+`Deploying Raffle.sol`
+- we'll need to configure the *helper-hardhat-config.js* with our chain Id, passing it's name and the *vrfCoordinatorV2* contract address for the testnet we choose to deploy, in our case Sepolia
+- we also will need to make a file for the *MOCK* that we'll deploy in the case that we use a local development chain
+	- this file will be named as *00-deploy-mocks.js* 
+
+`Deploying Raffle.sol with Mock Chainlink VRF Coordinator`
+-  if we're using a local network, we'll get the *vrfCoordinatorV2Mock*, otherwise, we'll use the *vrfCoordinatorV2Address* for the Sepolia network
+- in the *helper-hardhat-config.js* we need to specify some values to we use as arguments to deploying our contract
+	- *vrfCoordinatorV2* and *gasLane* we get from chainlink docs for the network that we'll be working on
+		- for the testnet, the *vrfCoordinatorV2* we don't need because we're going to deploy a mock and the *gasLane* we can set any value, because our mock will use a default anyway
+	- *entranceFee* we can set it the value we want 
+	- *subscriptionId* we can get from the chainlink website on the docs for VRF using in a testnet, on a local network we can do it programmatically as we do in *01-deploy-raffle.js* 
+		- we could do also the same way for the testnet, but in this project we're going to use the UI on the chainlink website to create the *subscriptionID* and fund it 
 
 
 
